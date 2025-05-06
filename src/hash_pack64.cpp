@@ -1,5 +1,8 @@
 // hash_pack64.cpp
 #include "flatpack/hash_pack64.hpp"
+#include "flatpack/simd/simd.hpp" // SIMD
+
+#include <iostream>
 
 namespace flatpack {
 
@@ -14,14 +17,14 @@ HashPack64::HashPack64(size_t initial_capacity)
 HashPack64::~HashPack64() noexcept { delete[] flat_map; }
 
 void HashPack64::insert(const Key64 &key, uint64_t value) {
-  uint64_t packed_key = key.value();
+  uint64_t packed_key = finalize_hash(key.value());
   uint8_t fingerprint = static_cast<uint8_t>(packed_key);
   size_t ideal_slot = hash_index(packed_key);
   size_t index = ideal_slot;
   size_t probe_distance = 0;
 
   Entry64 entry = {packed_key, value, fingerprint,
-                   static_cast<uint8_t>(probe_distance)};
+                   static_cast<uint16_t>(probe_distance)};
 
   while (true) {
     uint64_t current_key = flat_map[index].key;
@@ -34,6 +37,8 @@ void HashPack64::insert(const Key64 &key, uint64_t value) {
 
     if (current_key == packed_key) {
       flat_map[index].value = value;
+      // std::cout << "INSERT: key=" << key.value()
+      //           << " fingerprint=" << (int)fingerprint << std::endl;
       return;
     }
 
@@ -49,7 +54,7 @@ void HashPack64::insert(const Key64 &key, uint64_t value) {
 }
 
 bool HashPack64::find(const Key64 &key, uint64_t &value_out) {
-  uint64_t packed_key = key.value();
+  uint64_t packed_key = finalize_hash(key.value());
   uint8_t fingerprint = static_cast<uint8_t>(packed_key);
   size_t ideal_slot = hash_index(packed_key);
   size_t index = ideal_slot;
@@ -67,14 +72,35 @@ bool HashPack64::find(const Key64 &key, uint64_t &value_out) {
       return false;
     }
 
-    if (flat_map[index].fingerprint == fingerprint &&
-        flat_map[index].key == packed_key) {
-      value_out = flat_map[index].value;
-      return true;
-    }
+    size_t remaining = capacity - index;
+    if (remaining >= SIMD_WIDTH) {
+      uint32_t mask = flatpack::simd::fingerprint_match_mask(
+          &flat_map[index].fingerprint, fingerprint);
 
-    index = (index + 1) & (capacity - 1);
-    ++probe_distance;
+      while (mask != 0) {
+        int bit_index = __builtin_ctz(mask);
+        size_t real_index = (index + bit_index) & (capacity - 1);
+        if (flat_map[real_index].key == packed_key) {
+          value_out = flat_map[real_index].value;
+          // std::cout << "FIND: key=" << key.value()
+          // << " fingerprint=" << (int)fingerprint << std::endl;
+          return true;
+        }
+        mask &= mask - 1;
+      }
+
+      index = (index + SIMD_WIDTH) & (capacity - 1);
+      probe_distance += SIMD_WIDTH;
+    } else {
+      if (flat_map[index].fingerprint == fingerprint &&
+          flat_map[index].key == packed_key) {
+        value_out = flat_map[index].value;
+        return true;
+      }
+
+      index = (index + 1) & (capacity - 1);
+      ++probe_distance;
+    }
   }
 }
 

@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.embeddedhtml": "html",
+    "string": "cpp"
+  },
+  "clangd.arguments": ["--target=arm64-apple-macos"]
+}
