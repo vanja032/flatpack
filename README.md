@@ -9,7 +9,7 @@ The design focuses on simplicity, performance, and minimal external dependencies
 - Robin Hood hashing with optimized probing strategy
 - Flat layout for better cache locality
 - **64-bit** packed keys: **60 bits** store encoded key data, **4 bits** store the true key length, and the lowest 8 bits are used as a fingerprint
-- Fast lookup using fingerprint scan (planned: AVX2 SIMD optimization)
+- Fast lookup using fingerprint scan (SCALAR, AVX2, SSE2, ARM NEON SIMD optimization)
 - Dynamic resizing
 - Header-only design (easy integration)
 
@@ -43,7 +43,7 @@ Or simply include the header files directly into your project.
 
 ## Key Packing Algorithm
 
-Flatpack provides utility functions to encode strings (such as `_a-z1-5`) into compact 64-bit keys.  
+Flatpack provides utility functions to encode strings (such as `_a-z1-9`) into compact 64-bit keys.  
 The packed format reserves 60 bits to store the encoded key, 4 bits to indicate the true key length, and uses the lowest 8 bits of the key as a fingerprint for fast lookups.
 
 ## Roadmap
