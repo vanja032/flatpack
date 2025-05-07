@@ -10,10 +10,24 @@ namespace simd {
 inline uint32_t fingerprint_match_mask(const uint8_t *ptr,
                                        uint8_t fingerprint) {
   uint32_t mask = 0;
-  for (int i = 0; i < SIMD_WIDTH; ++i) {
-    if (ptr[i] == fingerprint)
-      mask |= (1u << i);
-  }
+
+  if (ptr[0] == fingerprint)
+    mask |= (1u << 0);
+  if (ptr[1] == fingerprint)
+    mask |= (1u << 1);
+  if (ptr[2] == fingerprint)
+    mask |= (1u << 2);
+  if (ptr[3] == fingerprint)
+    mask |= (1u << 3);
+  if (ptr[4] == fingerprint)
+    mask |= (1u << 4);
+  if (ptr[5] == fingerprint)
+    mask |= (1u << 5);
+  if (ptr[6] == fingerprint)
+    mask |= (1u << 6);
+  if (ptr[7] == fingerprint)
+    mask |= (1u << 7);
+
   return mask;
 }
 

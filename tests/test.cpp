@@ -5,7 +5,7 @@
 
 #include "../include/flatpack/hash_pack64.hpp"
 
-#define COUNT 5000
+#define COUNT 7000
 
 int main() {
   flatpack::HashPack64 map{};
