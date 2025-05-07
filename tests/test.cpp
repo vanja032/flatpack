@@ -42,26 +42,26 @@ int main() {
   }
 
   // Test bulk insert of 2000 keys
-  // bool bulk_pass = true;
-  // for (uint64_t i = 0; i < COUNT; ++i) {
-  //   flatpack::Key64 key_bulk(std::string("key") + std::to_string(i));
-
-  //   map.insert(key_bulk, i);
-  // }
-  // std::cout << "Map size: " << map.size << std::endl;
-  // for (uint64_t i = 0; i < COUNT; ++i) {
-  //   flatpack::Key64 key_bulk(std::string("key") + std::to_string(i));
-  //   uint64_t result_bulk = 0;
-  //   if (!map.find(key_bulk, result_bulk) || result_bulk != i) {
-  //     std::cout << "[FAIL] Bulk insert/find test for key " << i << std::endl;
-  //     bulk_pass = false;
-  //     break;
-  //   }
-  // }
-  // if (bulk_pass) {
-  //   std::cout << "[PASS] Bulk insert/find test for " << COUNT << " keys."
-  //             << std::endl;
-  // }
+  bool bulk_pass = true;
+  for (uint64_t i = 0; i < COUNT; ++i) {
+    flatpack::Key64 key_bulk(std::string("key") + std::to_string(i));
+    map.insert(key_bulk, i);
+  }
+  std::cout << "Map size: " << map.size << std::endl;
+  for (uint64_t i = 0; i < COUNT; ++i) {
+    flatpack::Key64 key_bulk(std::string("key") + std::to_string(i));
+    uint64_t result_bulk = 0;
+    if (!map.find(key_bulk, result_bulk) || result_bulk != i) {
+      std::cout << "[FAIL] Bulk insert/find test for key" << i
+                << " Value=" << result_bulk << std::endl;
+      bulk_pass = false;
+      // break;
+    }
+  }
+  if (bulk_pass) {
+    std::cout << "[PASS] Bulk insert/find test for " << COUNT << " keys."
+              << std::endl;
+  }
 
   uint64_t test_result = 0;
   flatpack::Key64 test_key("key" + std::to_string(122));

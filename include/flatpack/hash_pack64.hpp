@@ -11,8 +11,10 @@ namespace flatpack {
 class HashPack64 {
 private:
   static constexpr uint64_t EMPTY_KEY = 0;
+  static constexpr uint64_t EMPTY_FINGERPRINT = 0;
 
   Entry64 *flat_map;
+  uint8_t *fingerprints_flat_array;
   size_t capacity;
 
 public:

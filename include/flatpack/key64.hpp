@@ -27,6 +27,7 @@ namespace flatpack {
 class Key64 {
 private:
   uint64_t packed_key;
+  std::string original_key;
 
   static inline std::array<uint8_t, 256> symbol_table = [] {
     std::array<uint8_t, 256> table{};
@@ -60,6 +61,8 @@ public:
     packed_key <<= (remaining * 6);
     packed_key <<= 4;
     packed_key |= length;
+
+    original_key = std::string(key);
   }
 
   Key64(const std::string &key) : Key64(key.c_str()) {}
@@ -67,6 +70,10 @@ public:
   ~Key64() = default;
 
   [[nodiscard]] uint64_t value() const noexcept { return packed_key; }
+
+  [[nodiscard]] const std::string &get_original_key() const noexcept {
+    return original_key;
+  }
 
   bool operator==(const Key64 &other) const noexcept {
     return packed_key == other.packed_key;
