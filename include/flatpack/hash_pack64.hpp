@@ -8,7 +8,7 @@
 
 namespace flatpack {
 
-class HashPack64 {
+template <typename KeyT = Key64, typename ValueT = uint64_t> class HashPack64 {
 private:
   static constexpr uint64_t EMPTY_KEY = 0;
   static constexpr uint64_t EMPTY_FINGERPRINT = 0;
@@ -24,8 +24,8 @@ public:
   HashPack64(const HashPack64 &) = delete;
   HashPack64 &operator=(const HashPack64 &) = delete;
 
-  void insert(const Key64 &key, uint64_t value);
-  bool find(const Key64 &key, uint64_t &value_out);
+  void insert(const KeyT &key, ValueT value);
+  bool find(const KeyT &key, ValueT &value_out);
 
 private:
   inline size_t hash_index(uint64_t key_hash) const noexcept {

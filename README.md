@@ -56,6 +56,12 @@ The packed format reserves 60 bits to store the encoded key, 4 bits to indicate 
 
 ## Benchmark Results
 
+**Test Environment:**
+
+- Device: Apple Mac with M2 chip
+- RAM: 16 GB
+- OS: macOS
+
 Performance comparison on inserting and finding 7000 keys:
 
 - Best case (avg):
@@ -74,6 +80,15 @@ Performance comparison on inserting and finding 7000 keys:
 [FLATPACK] Found 7000 keys in 707 microseconds.
 [STD MAP] Inserted 7000 keys in 1045 microseconds.
 [STD MAP] Found 7000 keys in 520 microseconds.
+```
+
+- Random case:
+
+```
+[FLATPACK] Inserted 7000 keys in 748 microseconds.
+[FLATPACK] Found 7000 keys in 857 microseconds.
+[STD MAP] Inserted 7000 keys in 1643 microseconds.
+[STD MAP] Found 7000 keys in 950 microseconds.
 ```
 
 Flatpack demonstrates significantly faster insert performance and competitive find performance compared to the standard `std::map`.
@@ -149,3 +164,7 @@ int main() {
 ## License
 
 This project is licensed under the MIT License.
+
+## Author
+
+Created and maintained by Vanja Sretenovic. For more information or contributions, visit [https://github.com/vanja032](https://github.com/vanja032).

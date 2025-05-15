@@ -11,4 +11,4 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 
 # Build project
-cmake --build .
+cmake --build . # > build_log.txt 2>&1s

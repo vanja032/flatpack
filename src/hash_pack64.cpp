@@ -9,7 +9,8 @@
 
 namespace flatpack {
 
-HashPack64::HashPack64(size_t initial_capacity)
+template <typename KeyT, typename ValueT>
+HashPack64<KeyT, ValueT>::HashPack64(size_t initial_capacity)
     : capacity(initial_capacity), size(0) {
   flat_map = new Entry64[capacity];
   fingerprints_flat_array =
@@ -21,12 +22,14 @@ HashPack64::HashPack64(size_t initial_capacity)
   }
 }
 
-HashPack64::~HashPack64() noexcept {
+template <typename KeyT, typename ValueT>
+HashPack64<KeyT, ValueT>::~HashPack64() noexcept {
   delete[] flat_map;
   delete[] fingerprints_flat_array;
 }
 
-void HashPack64::insert(const Key64 &key, uint64_t value) {
+template <typename KeyT, typename ValueT>
+void HashPack64<KeyT, ValueT>::insert(const KeyT &key, ValueT value) {
   uint64_t packed_key = finalize_hash(key.value());
   uint8_t fingerprint = static_cast<uint8_t>(packed_key);
   size_t ideal_slot = hash_index(packed_key);
@@ -63,7 +66,8 @@ void HashPack64::insert(const Key64 &key, uint64_t value) {
   }
 }
 
-bool HashPack64::find(const Key64 &key, uint64_t &value_out) {
+template <typename KeyT, typename ValueT>
+bool HashPack64<KeyT, ValueT>::find(const KeyT &key, ValueT &value_out) {
   uint64_t packed_key = finalize_hash(key.value());
   uint8_t fingerprint = static_cast<uint8_t>(packed_key);
   size_t ideal_slot = hash_index(packed_key);
@@ -134,3 +138,5 @@ bool HashPack64::find(const Key64 &key, uint64_t &value_out) {
 }
 
 } // namespace flatpack
+
+template class flatpack::HashPack64<flatpack::Key64, uint64_t>;

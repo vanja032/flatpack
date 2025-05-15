@@ -8,7 +8,7 @@
 #define COUNT 7000
 
 int main() {
-  flatpack::HashPack64 map{};
+  flatpack::HashPack64<flatpack::Key64, uint64_t> map;
 
   // Test with string key
   flatpack::Key64 key_str("testkey");
